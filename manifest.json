@@ -1,0 +1,12 @@
+{
+    "name": "Summarize.io",
+    "version": "1.0",
+    "description": "Quickly summarize a page using Tensorflow.js!",
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon": "assets/icon.png",
+        "default_title": "Summarize.io",
+        "default_popup": "src/html/popup.html"
+    },
+    "permissions": ["storage", "unlimitedStorage", "tabs", "<all_urls>"]
+}
