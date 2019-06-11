@@ -1,0 +1,21 @@
+
+#intro-text {
+  font-size: 15px;
+  font-family: Arial;
+}
+
+.text-body {
+  width: 200px;
+  text-align: center;
+}
+
+.body-grad-button {
+  border: none;
+  background: linear-gradient(60deg, purple, cyan);
+  color: white;
+  border-radius: 5px;
+  padding: 20px 100px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
