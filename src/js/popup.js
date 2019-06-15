@@ -1,12 +1,16 @@
 
 window.onload = function () {
-  updateSettings();
+  loadSettings();
   $('#toggle-enable').click(toggleSettings);
 }
 
 setInterval(function () {
     updateSettings();
 }, 500);
+
+function loadSettings () {
+
+}
 
 function updateSettings () {
 
