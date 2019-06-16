@@ -11,7 +11,9 @@
     "permissions": ["storage", "unlimitedStorage", "tabs", "<all_urls>"],
     "content_scripts": [{
         "matches": ["<all_urls>"],
-        "css": ["src/css/styles.css"],
-        "js": ["src/js/jquery-3.4.1-uncompressed.js"]
+        "css": ["src/css/content.css"],
+        "js": ["src/js/jquery-3.4.1-uncompressed.js","src/js/content.js"],
+        "run_at": "document_end",
+        "all_frames": true
     }]
 }
