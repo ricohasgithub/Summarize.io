@@ -15,10 +15,5 @@
         "js": ["src/js/jquery-3.4.1-uncompressed.js","src/js/content.js"],
         "run_at": "document_end",
         "all_frames": true
-    }],
-    "background": {
-        "scripts":[
-          "background.js"
-        ]
-    }
+    }]
 }
