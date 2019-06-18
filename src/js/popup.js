@@ -49,7 +49,6 @@ function loadSettings () {
 }
 
 function updateSettings () {
-  loadSettings();
 }
 
 function toggleSettings () {
@@ -73,11 +72,25 @@ function toggleSettings () {
               }
 
               if (settings["toggle-enable"]) {
+
                 console.log("disabling");
-                //
+
+                // Add the current tab's domain name to the disabled-hostnames object-array
                 settings["disabled-hostnames"].push(domain);
+
               } else {
+
                 console.log("enabling");
+
+                // Remove current tab hostname from disabled-hostnames object-array
+                settings["disabled-hostnames"] = $.grep(settings["disabled-hostnames"], function (item) {
+                  return item !== domain;
+                });
+
+                chrome.storage.local.set({settings: settings}, function (data) {
+                  // Reload settings after updating local storage values
+                  loadSettings();
+                });
               }
         });
     });
