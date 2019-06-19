@@ -1,4 +1,5 @@
 
+
 window.onload = function () {
   loadSettings();
   $('#toggle-enable').click(toggleSettings);
@@ -18,7 +19,7 @@ function loadSettings () {
         chrome.storage.local.get("settings", function (data) {
 
               // Get the settings object from the chrome local storage
-              let settings = data["settings"];
+              var settings = data["settings"];
 
               // If the local chrome storage has not had initialized a settings query, create an empty object
               if (typeof settings === "undefined") {
@@ -30,6 +31,12 @@ function loadSettings () {
               if (typeof settings["disabled-hostnames"] === "undefined") {
                   settings["disabled-hostnames"] = [];
               }
+
+              console.log(settings);
+
+              chrome.storage.local.set({settings: settings}, function () {
+                console.log("Settings stored");
+              });
 
               // Bind the toggle-enable id object to the settings in the local storage
               $("#toggle-enable").prop('checked', settings["toggle-enable"]);
