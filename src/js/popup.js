@@ -1,5 +1,3 @@
-
-
 window.onload = function () {
   loadSettings();
   $('#toggle-enable').click(toggleSettings);
@@ -11,7 +9,7 @@ setInterval(function () {
 
 function loadSettings () {
 
-  chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+  chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
 
         console.log("Loading Settings");
 
@@ -73,6 +71,11 @@ function updateSettings () {
             loadSettings();
         });
 
+        // Send an update message to the content.js script
+        chrome.tabs.sendMessage(tabs[0].id, {cTabSettings: ($('#toggle-enable').is(":checked"))}, function(response) {
+            console.log(response.notification);
+        });
+
     });
 
 }
@@ -81,7 +84,7 @@ function toggleSettings () {
 
   console.log("Toggling settings");
 
-  chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+  chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
 
         // Get the current URL and domain name of the tab
         var domain = new URL(tabs[0].url).hostname;
@@ -132,18 +135,18 @@ function getCurrWebpageSettings (domain) {
 
   var enabled;
 
-  chrome.storage.local.get("settings", function (data) {
+  chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
 
-      // Get the settings from the chrome tab local storage
-      var settings = data["settings"];
+    chrome.storage.local.get("settings", function (data) {
 
-      disabled = (settings["disabled-hostnames"].indexOf(domain) != -1);
+        // Get the settings from the chrome tab local storage
+        var settings = data["settings"];
+
+        disabled = (settings["disabled-hostnames"].indexOf(domain) != -1);
+
+      });
 
   });
-
-  if (typeof enabled === "undefined") {
-    enabled = true;
-  }
 
   return enabled;
 
