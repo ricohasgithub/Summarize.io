@@ -14,7 +14,7 @@ function loadSettings () {
   chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
 
         // Get the current URL and domain name
-        let domain = new URL(tabs[0].url).hostname;
+        var domain = new URL(tabs[0].url).hostname;
 
         chrome.storage.local.get("settings", function (data) {
 
@@ -47,15 +47,36 @@ function loadSettings () {
                 console.log("disabled");
               }
 
-              if (settings["disabled-hostnames"].indexOf(domain) != -1) {
-              } else {
-              }
-
         });
     });
 }
 
 function updateSettings () {
+
+  console.log("Updating settings");
+
+    chrome.storage.local.get("settings", function (data) {
+
+        // Get the settings from the chrome tab local storage
+        var settings = data["settings"];
+
+        if (typeof settings === "undefined"){
+            settings = {};
+        }
+
+        if (typeof settings["disabled-hostnames"] === "undefined") {
+            settings["disabled-hostnames"] = [];
+        }
+
+        // Get an update to see whether the toggle-enable div has changed status (checked or not)
+        settings["toggle-enable"] = $("#toggle-enable").is(':checked');
+
+        chrome.storage.local.set({settings: settings}, function (data) {
+            loadSettings();
+        });
+
+    });
+
 }
 
 function toggleSettings () {
@@ -66,7 +87,7 @@ function toggleSettings () {
   chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
 
         // Get the current URL and domain name of the tab
-        let domain = new URL(tabs[0].url).hostname;
+        var domain = new URL(tabs[0].url).hostname;
 
         chrome.storage.local.get("settings", function (data) {
 
@@ -82,12 +103,18 @@ function toggleSettings () {
 
                 console.log("disabling");
 
+                // Change popup appearance from disabled to enabled
+                $("#toggle-enable").removeClass("disabled").addClass("enabled");
+
                 // Add the current tab's domain name to the disabled-hostnames object-array
                 settings["disabled-hostnames"].push(domain);
 
               } else {
 
                 console.log("enabling");
+
+                // Change popup appearance from enabled to disabled
+                $("#toggle-enable").removeClass("enabled").addClass("disabled");
 
                 // Remove current tab hostname from disabled-hostnames object-array
                 settings["disabled-hostnames"] = $.grep(settings["disabled-hostnames"], function (item) {

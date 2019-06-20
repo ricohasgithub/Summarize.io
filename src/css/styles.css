@@ -9,13 +9,21 @@
   text-align: center;
 }
 
-.body-grad-button {
+.body-grad-slider {
+  display: inline-block;
   border: none;
-  background: linear-gradient(60deg, purple, cyan);
-  color: white;
   border-radius: 5px;
-  padding: 20px 100px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
+}
+
+.enabled {
+  background: linear-gradient(60deg, purple, cyan);
+  color: white;
+}
+
+.disabled {
+  background: #cccccc;
+  color: black;
 }
