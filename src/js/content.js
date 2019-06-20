@@ -10,12 +10,8 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.cTabSettings === true) {
       enabled = true;
-      sendResponse({notification: "enabling..."});
     } else if (request.cTabSettings === false) {
       enabled = false;
-      sendResponse({notification: "disabling..."});
-    } else {
-      sendResponse({notification: "NOT RECEIVED"});
     }
 });
 

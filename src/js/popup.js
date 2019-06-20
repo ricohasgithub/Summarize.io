@@ -71,11 +71,6 @@ function updateSettings () {
             loadSettings();
         });
 
-        // Send an update message to the content.js script
-        chrome.tabs.sendMessage(tabs[0].id, {cTabSettings: ($('#toggle-enable').is(":checked"))}, function(response) {
-            console.log(response.notification);
-        });
-
     });
 
 }
@@ -126,6 +121,11 @@ function toggleSettings () {
                   // Reload settings after updating local storage values
                   loadSettings();
                 });
+
+                // Send an update message to the content.js script
+                chrome.tabs.sendMessage(tabs[0].id, {cTabSettings: ($('#toggle-enable').is(":checked"))}, function() {
+                });
+
               }
         });
     });
