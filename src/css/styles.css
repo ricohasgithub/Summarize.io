@@ -1,4 +1,8 @@
 
+#popup-content {
+  margin-bottom: 20px;
+}
+
 #intro-text {
   font-size: 15px;
   font-family: Arial;
@@ -48,7 +52,7 @@
   top: 40px;
   left: 60px;
   right: 60px;
-  bottom: 0px;
+  bottom: 12px;
   border-radius: 34px;
   background-color: #ccc;
   -webkit-transition: .4s;
@@ -83,5 +87,5 @@ input:checked + .slider:before {
 }
 
 body {
-  
+
 }
