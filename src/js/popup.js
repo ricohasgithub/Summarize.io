@@ -46,6 +46,8 @@ function loadSettings () {
                 $("#toggle-enable").removeClass("enabled").addClass("disabled");
               }
 
+              $("#sitename").text(domain);
+
         });
     });
 }

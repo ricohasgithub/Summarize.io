@@ -1,6 +1,6 @@
 
 #popup-content {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 #intro-text {
@@ -11,6 +11,12 @@
 #text-body {
   width: 200px;
   text-align: center;
+}
+
+#sitename {
+  font-style: bold;
+  color: #4271f4;
+  margin-bottom: 30px;
 }
 
 .body-grad-slider {
@@ -49,7 +55,7 @@
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 40px;
+  top: 118px;
   left: 60px;
   right: 60px;
   bottom: 12px;
@@ -73,7 +79,7 @@
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #42f45c;
 }
 
 input:focus + .slider {
@@ -84,8 +90,4 @@ input:checked + .slider:before {
   -webkit-transform: translateX(60px);
   -ms-transform: translateX(60px);
   transform: translateX(60px);
-}
-
-body {
-
 }
