@@ -18,8 +18,6 @@ chrome.runtime.onMessage.addListener(
 // Mouse listener for any move event on the current document.
 document.addEventListener('mousemove', function (e) {
 
-      chrome.runtime.sendMessage({sender: "content", selText : "disabled"});
-
   if (enabled) {
 
     // Go through highlighting/appending procedure throughout the DOM
@@ -45,7 +43,9 @@ document.addEventListener('mousemove', function (e) {
     console.log("Sending message");
 
     // Send an update message to the popup.js script
-    chrome.runtime.sendMessage({sender: "content", selText : ($(srcElement).text())});
+    chrome.runtime.sendMessage({sender: "content", selText : ($(srcElement).text())}, function () {
+      console.log("success");
+    });
 
 
   } else if (!enabled) {
@@ -71,7 +71,9 @@ document.addEventListener('mousemove', function (e) {
     }
 
     // Send an update message to the popup.js script
-    chrome.runtime.sendMessage({sender: "content", selText : "disabled"});
+    chrome.runtime.sendMessage({sender: "content", selText : "disabled"}, function () {
+      console.log("success");
+    });
 
   }
 

@@ -9,8 +9,9 @@ chrome.runtime.onMessage.addListener(
     console.log(request.selText);
     if (request.sender == "content" && request.selText == "disabled") {
       // Disabled for webpage - No action
+      $("#intro-text").text("No Message");
     } else if (request.sender == "content" && request.selText !== "disabled") {
-      $("#process-info").text(request.selText);
+      $("#intro-text").text("Message");
     }
 });
 
@@ -120,8 +121,6 @@ function toggleSettings () {
                 // Reload settings after updating local storage values
                 loadSettings();
               });
-
-              console.log("got here");
 
               // Send an update message to the content.js script
               chrome.tabs.sendMessage(tabs[0].id, {cTabSettings: ($('#toggle-enable').is(":checked"))});
