@@ -18,10 +18,12 @@ chrome.runtime.onMessage.addListener(
 // Mouse listener for any move event on the current document.
 document.addEventListener('mousemove', function (e) {
 
+      chrome.runtime.sendMessage({sender: "content", selText : "disabled"});
+
   if (enabled) {
 
     // Go through highlighting/appending procedure throughout the DOM
-    var srcElement = e.srcElement;
+    var srcElement = e.target;
 
     // Lets check if our underlying element is a DIV.
     if (srcElement.nodeName == 'DIV') {
@@ -40,10 +42,16 @@ document.addEventListener('mousemove', function (e) {
         prevDOM = srcElement;
     }
 
+    console.log("Sending message");
+
+    // Send an update message to the popup.js script
+    chrome.runtime.sendMessage({sender: "content", selText : ($(srcElement).text())});
+
+
   } else if (!enabled) {
 
     // Go through unhighlighting/unappending procedure throughout the DOM
-    var srcElement = e.srcElement;
+    var srcElement = e.target;
 
     // Lets check if our underlying element is a DIV.
     if (srcElement.nodeName == 'DIV') {
@@ -61,6 +69,9 @@ document.addEventListener('mousemove', function (e) {
         // during the next iteration.
         prevDOM = srcElement;
     }
+
+    // Send an update message to the popup.js script
+    chrome.runtime.sendMessage({sender: "content", selText : "disabled"});
 
   }
 
