@@ -9,15 +9,11 @@ chrome.runtime.onMessage.addListener(
     console.log(request.selText);
     if (request.sender == "content" && request.selText == "disabled") {
       // Disabled for webpage - No action
-      $("#intro-text").text("No Message");
     } else if (request.sender == "content" && request.selText !== "disabled") {
-      $("#intro-text").text("Message");
+      // $("#intro-text").text("Message");
+      console.log(request.selText);
     }
 });
-
-// setInterval(function () {
-//   // updateSettings();
-// }, 500);
 
 function loadSettings () {
 

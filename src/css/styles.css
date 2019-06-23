@@ -19,6 +19,11 @@
   margin-bottom: 30px;
 }
 
+#grad-bar {
+  background: linear-gradient(60deg, purple, cyan);
+  height: 8px !important;
+}
+
 .body-grad-slider {
   display: inline-block;
   margin-left: 65px;
@@ -55,7 +60,7 @@
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 118px;
+  top: 134px;
   left: 60px;
   right: 60px;
   bottom: 12px;
