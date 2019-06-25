@@ -40,8 +40,6 @@ document.addEventListener('mousemove', function (e) {
         prevDOM = srcElement;
     }
 
-    console.log("Sending message");
-
     // Send an update message to the popup.js script
     chrome.runtime.sendMessage({sender: "content", selText : ($(srcElement).text())}, function () {
       console.log("success");
