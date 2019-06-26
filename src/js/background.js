@@ -1,9 +1,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 
-const model_host = 'https://api.myjson.com/bins/10mbt5';
-
-const model = await tf.loadLayersModel(model_host);
+const model_host = 'https://api.myjson.com/bins/nm2n3';
 
 class Summarizer () {
 
@@ -22,22 +20,26 @@ class Summarizer () {
           // User has selected text that is not "disabled", summarize input text (selText) and send back response
           if (this.model) {
             var summary = summarize(request.selText);
-            
+            // Send an update message to the content script
+            chrome.runtime.sendMessage({sender: "background", selText : summary}, function () {
+              console.log("Returning summary");
+            });
           }
         }
     });
   }
 
   async loadModel () {
-
+    const model = await tf.loadLayersModel(model_host);
   }
 
-  async summarize () {
+  async summarize (text) {
+    var inputLength = getTExtLength(text);
 
   }
 
   async getTextLength (text) {
-    return  text.split();
+    return text.split().length;
   }
 
 }

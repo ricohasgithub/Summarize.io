@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from keras.models import Model, Sequential, load_model
+from keras.models import Model, Sequential, load_model, model_from_json
 from keras.layers import Embedding, Dense, Input, RepeatVector, TimeDistributed, concatenate, add, Dropout
 from keras.layers.recurrent import LSTM
 from keras.preprocessing.sequence import pad_sequences
@@ -185,6 +185,9 @@ def main():
     #
     # model = OneShotRNN(config)
     # model.load_weights(weight_file_path=OneShotRNN.get_weight_file_path(model_dir_path=model_dir_path))
+
+    with open('./models/one-shot-rnn-architecture.json', 'r') as f:
+        model = model_from_json(f.read())
 
     model = load_model("./models/one-shot-rnn-weights.h5")
 
