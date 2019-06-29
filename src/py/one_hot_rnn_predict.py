@@ -1,11 +1,13 @@
 from __future__ import print_function
 
+from sklearn.model_selection import train_test_split
 from keras.models import Model, Sequential, load_model, model_from_json
 from keras.layers import Embedding, Dense, Input, RepeatVector, TimeDistributed, concatenate, add, Dropout
 from keras.layers.recurrent import LSTM
 from keras.preprocessing.sequence import pad_sequences
 from keras.callbacks import ModelCheckpoint
 import numpy as np
+import pandas as pd
 import os
 
 HIDDEN_UNITS = 100
@@ -176,8 +178,49 @@ class OneShotRNN(object):
         predicted_word_list = [self.target_idx2word[wid] for wid in predicted_word_idx_list[0]]
         return predicted_word_list
 
+def fit_text (dict_words, input_text):
+
+    index = 0
+    input_seq = []
+
+    list_lines = input_text.tolist()
+
+    for text in list_lines:
+        input_wids = []
+        for word in text.lower().split(' '):
+            idx = 1  # default [UNK]
+            if word in dict_words:
+                idx = dict_words.index(word)
+            else:
+                idx = 4
+            input_wids.append(idx)
+        input_seq.append(input_wids)
+
+        print(index)
+        index += 1
+
+    input_seq = pad_sequences(input_seq, 500)
+    return input_seq
+
+def transform_encoding(texts):
+    temp = []
+    for line in texts:
+        x = []
+        line2 = 'START ' + line.lower() + ' END'
+        for word in line2.split(' '):
+            x.append(word)
+            if len(x) >= 500:
+                break
+        temp.append(x)
+
+    temp = np.array(temp)
+    print(temp.shape)
+    return temp
 
 def main():
+
+    with open('words_alpha.txt') as word_file:
+        dict_words = word_file.read().split()
 
     # model_dir_path = './models'
     #
@@ -190,12 +233,55 @@ def main():
         model = model_from_json(f.read())
 
     model = load_model("./models/one-shot-rnn-weights.h5")
+    # model = load_model("model.h5")
 
     print('model loaded')
 
-    model.save('./model.h5')
+    # train model
+    np.random.seed(42)
 
+    print('loading csv file ...')
+    df = pd.read_csv("./fake_or_real_news.csv")
+
+    print('extract configuration from input texts ...')
+
+    # df = df.loc[df.index < 1000]
+    Y = df.title
+    X = df['text']
+
+    X_config = fit_text(dict_words, X)
+    Y_config = transform_encoding(Y)
+
+    #Xtrain, Xtest, Ytrain, Ytest = train_test_split(X_config, Y_config, test_size=0.05, random_state=42)
+
+    # print('training size: ', len(Xtrain))
+    # print('testing size: ', len(Xtest))
+
+    print('start fitting ...')
+    model.fit(X_config, Y_config, epochs=100, batch_size=20, verbose=1, validation_split=0.2)
+
+    # save model
+
+    model.save('./model/h5')
     print('model saved')
+
+    # evaluate model
+
+    text = "Although founded as a preparatory and vocational school by Amos G. Throop in 1891, the college attracted influential scientists such as George Ellery Hale, Arthur Amos Noyes and Robert Andrews Millikan in the early 20th century. The vocational and preparatory schools were disbanded and spun off in 1910 and the college assumed its present name in 1921. In 1934, Caltech was elected to the Association of American Universities and the antecedents of NASA's Jet Propulsion Laboratory, which caltech continues to manage and operate, were established between 1936 and 1943 under Theodore von Kármán.[13][14] The university is one among a small group of institutes of technology in the United States which is primarily devoted to the instruction of pure and applied sciences."
+
+    pred = summ.predict(load_input(text))
+
+    predicted_word_idx_list = np.argmax(pred, axis=1)
+    predicted_word_list = [dict_words[wid] for wid in predicted_word_idx_list[0]]
+
+    print('Prediction: ', predicted_word_list)
+
+
+    # model.save('./model.h5')
+    #
+    # print('model saved')
+
+    # run this in the terminal: python one_hot_rnn_predict.py
 
 if __name__ == '__main__':
     main()
