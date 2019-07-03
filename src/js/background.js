@@ -65,18 +65,32 @@ class Summarizer () {
   }
 
   async buildDictionary (text) {
+
     // Get the maximum index/length of the text (number of words) and construct empty dictionary
     var maxIndex = getTextLength(text);
-    var dictionary = [];
-
-
+    var dictionary = text.split();
 
     return dictionary;
 
   }
 
   async transformInput (text) {
+
     // Transform input text (highlight/selText) into a tensor of integer values (constuct a dictionary)
+    let inputTensor = [];
+    // Get the dictionary from the input text
+    let dict = buildDictionary(text);
+    // Split the input text
+    let textArr = text.split();
+
+    // Array index counter for input text
+    let i;
+    for (i=0; i<textArr.length(); i++) {
+      
+    }
+
+    return inputTensor;
+
   }
 
   async convertPredictions(text) {
