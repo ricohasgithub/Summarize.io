@@ -1,0 +1,4 @@
+
+var markovjs = (function() {
+  
+})();
