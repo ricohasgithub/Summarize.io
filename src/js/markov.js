@@ -13,15 +13,31 @@ var markovjs = (function() {
 
       let followers = new Array(inputText.length);
 
-      for (i=0; i<followers.length; i++) {
-        folowers[i] = new Array(inputText.length - i);
+      for (i=0; i<inputText.length; i++) {
+        // Create a new array of length 4 (4 most significant words)
+        folowers[i] = new Array(4);
       }
+
+      // Fill the follower array
+      for (i=0; i<inputText.length; i++) {
+
+        let currWord = this.parseWord(inputText[i]);
+
+
+      }
+
 
     },
 
     summarize: function (inputText, capLength) {
+
       let initWord = Math.random() * inputText.length;
 
+    },
+
+    parseWord: function (word) {
+      let newWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+      return newWord;
     }
 
   }
