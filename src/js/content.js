@@ -68,7 +68,7 @@ document.addEventListener('mousemove', function (e) {
         prevDOM = srcElement;
     }
 
-    // Send an update message to the popup.js script
+    // Send an update message to the popup.js script; send summarization request to background script
     chrome.runtime.sendMessage({sender: "content", selText : "disabled"}, function () {
       console.log("success");
     });

@@ -92,3 +92,14 @@ var markovjs = (function() {
   return exports;
 
 })();
+
+// Get summarization cue from content.js
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.cTabSettings === true) {
+      enabled = true;
+    } else if (request.cTabSettings === false) {
+      enabled = false;
+    }
+});

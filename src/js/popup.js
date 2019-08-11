@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener(
     if (request.sender == "content" && request.selText == "disabled") {
       // Disabled for webpage - No action
     } else if (request.sender == "content" && request.selText !== "disabled") {
-      // $("#intro-text").text("Message");
+      // Get summarized content from content.js; display
     }
 });
 
