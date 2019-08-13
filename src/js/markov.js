@@ -97,9 +97,15 @@ var markovjs = (function() {
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    if (request.cTabSettings === true) {
-      enabled = true;
-    } else if (request.cTabSettings === false) {
-      enabled = false;
+    if (request.sender == "content" && request.selText == "disabled") {
+      // Disabled for webpage - No action
+    } else if (request.sender == "content" && request.selText !== "disabled") {
+      // User has selected text that is not "disabled", summarize input text (selText) and send back response
+      let summary = "";
+
+      // Send an update message to the content script
+      chrome.runtime.sendMessage({sender: "background", selText : summary}, function () {
+        console.log("Returning summary");
+      });
     }
 });

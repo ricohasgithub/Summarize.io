@@ -18,129 +18,62 @@ function loadSettings () {
 
   chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
 
-        // Get the current URL and domain name
-        var domain = new URL(tabs[0].url).hostname;
+      // Get the current URL and domain name
+      var domain = new URL(tabs[0].url).hostname;
 
-        chrome.storage.local.get("settings", function (data) {
+      $("#toggle-enable").prop('checked', false);
+      $("#toggle-enable").removeClass("enabled").addClass("disabled");
+      $("#sitename").text(domain);
 
-              // Get the settings object from the chrome local storage
-              var settings = data["settings"];
-
-              // If the local chrome storage has not had initialized a settings query, create an empty object
-              if (typeof settings === "undefined") {
-                  settings = {};
-              }
-
-              if (typeof settings["disabled-hostnames"] === "undefined") {
-                  settings["disabled-hostnames"] = [];
-              }
-
-              var pageEnableStats = getCurrWebpageSettings(domain);
-
-              // Bind the toggle-enable id object to the settings in the local storage
-              $("#toggle-enable").prop('checked', pageEnableStats);
-
-              if (settings["disabled-hostnames"].indexOf(domain) != -1) {
-                $("#toggle-enable").removeClass("disabled").addClass("enabled");
-              } else {
-                $("#toggle-enable").removeClass("enabled").addClass("disabled");
-              }
-
-              $("#sitename").text(domain);
-
-        });
-    });
+  });
 }
 
-function updateSettings () {
-
-    chrome.storage.local.get("settings", function (data) {
-
-        // Get the settings from the chrome tab local storage
-        var settings = data["settings"];
-
-        if (typeof settings === "undefined"){
-            settings = {};
-        }
-
-        if (typeof settings["disabled-hostnames"] === "undefined") {
-            settings["disabled-hostnames"] = [];
-        }
-
-        chrome.storage.local.set({settings: settings}, function (data) {
-            loadSettings();
-        });
-
-    });
-
-}
-
-function toggleSettings () {
+async function toggleSettings () {
 
   chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
 
         // Get the current URL and domain name of the tab
         var domain = new URL(tabs[0].url).hostname;
 
-        chrome.storage.local.get("settings", function (data) {
+        if ($('#toggle-enable').is(":checked") === false) {
+          console.log("disabling");
+          // Change popup appearance from disabled to enabled
+          $("#toggle-enable").removeClass("enabled").addClass("disabled");
 
-              // Get the current settings from the chrome local storage
-              let settings = data["settings"];
+          // Send an update message to the content.js script
+          chrome.tabs.sendMessage(tabs[0].id, {cTabSettings: false});
 
-              // If the local chrome storage has not had initialized a disabled-hostnamess obejct, create an empty one
-              if (typeof settings["disabled-hostnames"] === "undefined") {
-                settings["disabled-hostnames"] = [];
-              }
+        } else if ($('#toggle-enable').is(":checked") === true) {
+          console.log("enabling");
+          // Change popup appearance from enabled to disabled
+          $("#toggle-enable").removeClass("disabled").addClass("enabled");
 
-              if (settings["disabled-hostnames"].indexOf(domain) != -1) {
+          if (ensureContentScript(tabs[0].id)) {
+            // Send an update message to the content.js script
+            chrome.tabs.sendMessage(tabs[0].id, {cTabSettings: true});
+          }
 
-                // Change popup appearance from disabled to enabled
-                $("#toggle-enable").removeClass("enabled").addClass("disabled");
+        } else {
+          console.log("noooooo");
+        }
 
-                // Add the current tab's domain name to the disabled-hostnames object-array
-                settings["disabled-hostnames"].push(domain);
-
-              } else {
-
-                // Change popup appearance from enabled to disabled
-                $("#toggle-enable").removeClass("disabled").addClass("enabled");
-
-                // Remove current tab hostname from disabled-hostnames object-array
-                settings["disabled-hostnames"] = $.grep(settings["disabled-hostnames"], function (item) {
-                  return item !== domain;
-                });
-
-              }
-
-              chrome.storage.local.set({settings: settings}, function (data) {
-                // Reload settings after updating local storage values
-                loadSettings();
-              });
-
-              // Send an update message to the content.js script
-              chrome.tabs.sendMessage(tabs[0].id, {cTabSettings: ($('#toggle-enable').is(":checked"))});
-
-        });
     });
 }
 
 function getCurrWebpageSettings (domain) {
-
-  var enabled;
-
-  chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
-
-    chrome.storage.local.get("settings", function (data) {
-
-        // Get the settings from the chrome tab local storage
-        var settings = data["settings"];
-
-        disabled = (settings["disabled-hostnames"].indexOf(domain) != -1);
-
-      });
-
-  });
-
+  let enabled = $('#toggle-enable').is(":checked");
   return enabled;
+}
 
+async function ensureContentScript(tabId) {
+  try {
+    const [running] = await browser.tabs.executeScript(tabId, {
+      code: 'window.running === true',
+    });
+    if (!running) {
+      console.log("injected new script");
+      await browser.tabs.executeScript(tabId, {file: 'content.js'});
+    }
+    return true;
+  } catch (e) {}
 }

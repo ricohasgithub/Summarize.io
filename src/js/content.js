@@ -1,3 +1,15 @@
+// Variables for oprhan checking
+var orphanMessageId = chrome.runtime.id + 'orphanCheck';
+window.dispatchEvent(new Event(orphanMessageId));
+window.addEventListener(orphanMessageId, unregisterOrphan);
+
+// register all listeners with named functions to preserve their object reference
+chrome.runtime.onMessage.addListener(onMessage);
+document.addEventListener('mousemove', onMouseMove);
+
+// the popup script checks it to see if a usable instance of content script is running
+window.running = true;
+
 // Unique ID for the className.
 var HIGHLIGHT_CLASS = 'highlight';
 
@@ -6,17 +18,19 @@ var prevDOM = null;
 
 let enabled = false;
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if (request.cTabSettings === true) {
-      enabled = true;
-    } else if (request.cTabSettings === false) {
-      enabled = false;
-    }
-});
+function onMessage (request, sender, sendResponse) {
+  console.log("message received!");
+  if (request.cTabSettings === true) {
+    enabled = true;
+  } else if (request.cTabSettings === false) {
+    enabled = false;
+  }
+}
 
-// Mouse listener for any move event on the current document.
-document.addEventListener('mousemove', function (e) {
+function onMouseMove (e) {
+  // DOM events still fire in the orphaned content script after the extension
+  // was disabled/removed and before it's re-enabled or re-installed
+  if (unregisterOrphan()) { return }
 
   if (enabled) {
 
@@ -42,7 +56,7 @@ document.addEventListener('mousemove', function (e) {
 
     // Send an update message to the popup.js script
     chrome.runtime.sendMessage({sender: "content", selText : ($(srcElement).text())}, function () {
-      console.log("success");
+      console.log("enabled-success");
     });
 
 
@@ -70,9 +84,23 @@ document.addEventListener('mousemove', function (e) {
 
     // Send an update message to the popup.js script; send summarization request to background script
     chrome.runtime.sendMessage({sender: "content", selText : "disabled"}, function () {
-      console.log("success");
+      console.log("disabled-success");
     });
 
   }
+}
 
-}, false);
+function unregisterOrphan() {
+  if (chrome.i18n) {
+    // someone tried to kick us out but we're not orphaned!
+    return;
+  }
+  console.log(orphanMessageId);
+  window.removeEventListener(orphanMessageId, unregisterOrphan);
+  document.removeEventListener('mousemove', onMouseMove);
+  try {
+    // 'try' is needed to avoid an exception being thrown in some cases
+    chrome.runtime.onMessage.removeListener(onMessage);
+  } catch (e) {}
+  return true;
+}

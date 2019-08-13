@@ -13,5 +13,9 @@
         "matches": ["<all_urls>"],
         "css": ["src/css/content.css"],
         "js": ["src/js/jquery-3.4.1-uncompressed.js","src/js/content.js"]
-    }]
+    }],
+    "background": {
+      "scripts": ["src/js/markov.js"],
+      "persistent": false
+    }
 }
