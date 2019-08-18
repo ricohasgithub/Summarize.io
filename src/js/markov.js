@@ -101,11 +101,9 @@ chrome.runtime.onMessage.addListener(
       // Disabled for webpage - No action
     } else if (request.sender == "content" && request.selText !== "disabled") {
       // User has selected text that is not "disabled", summarize input text (selText) and send back response
-      let summary = "";
+      let summary = "This is a summary";
 
-      // Send an update message to the content script
-      chrome.runtime.sendMessage({sender: "background", selText : summary}, function () {
-        console.log("Returning summary");
-      });
+      // Send a response message to the content script
+      sendResponse({summary: summary});
     }
 });

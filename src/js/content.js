@@ -55,8 +55,9 @@ function onMouseMove (e) {
     }
 
     // Send an update message to the popup.js script
-    chrome.runtime.sendMessage({sender: "content", selText : ($(srcElement).text())}, function () {
+    chrome.runtime.sendMessage({sender: "content", selText : ($(srcElement).text())}, function (response) {
       console.log("enabled-success");
+      console.log(response.summary);
     });
 
 
