@@ -17,7 +17,7 @@ var markovjs = (function() {
 
       for (i=0; i<inputText.length; i++) {
         // Create a new array of length 4 (key word + 3 following words)
-        folowers[i] = new Array(4);
+        followers[i] = new Array(4);
       }
 
       // Fill the follower array
@@ -63,7 +63,12 @@ var markovjs = (function() {
 
     summarize: function (inputText, capLength) {
 
+      // Create an empty summary
+      let summary = "Summary updated!";
+
       let initWord = Math.random() * inputText.length;
+
+      return summary;
 
     },
 
@@ -97,8 +102,6 @@ chrome.runtime.onMessage.addListener(
       // User has selected text that is not "disabled", summarize input text (selText) and send back response
       let summary = "This is a summary";
 
-      // Summarize!
-
       // Create and pass global parameters for trainer
       let inputText = request.selText;
       let capLength = inputText.length * 0.4;
@@ -108,7 +111,9 @@ chrome.runtime.onMessage.addListener(
 
       // Prep and train summarizer
       summarizer.prep(inputText, capLength);
-      summarizer.summarize(inputText, capLength);
+
+      // Get the summary from the summarizer model
+      summary = summarizer.summarize(inputText, capLength);
 
       // Send a response message to the content script
       sendResponse({summary: summary});
